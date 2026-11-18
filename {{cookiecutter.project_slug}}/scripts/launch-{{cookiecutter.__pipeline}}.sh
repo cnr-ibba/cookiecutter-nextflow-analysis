@@ -27,4 +27,6 @@ trap 'kill -TERM $NF_PID 2>/dev/null || exit 143' TERM
 {% include "sarek.sh" %}
 {% elif cookiecutter.project_type == "nf-core/smrnaseq" %}
 {% include "smrnaseq.sh" %}
+{% elif cookiecutter.project_type == "cnr-ibba/nf-resequencing-mem" %}
+{% include "nf-resequencing-mem.sh" %}
 {% endif %}

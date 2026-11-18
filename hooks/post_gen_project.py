@@ -108,6 +108,13 @@ json_params = {
         "hairpin": "<hairpin fasta file>"
     },
 
+    "cnr-ibba/nf-resequencing-mem": {
+        "input": "<your input here>",
+        "outdir": "<your results folder>",
+        "genome_fasta": "<genome fasta file>",
+        "genome_fasta_fai": "<genome fasta index (.fai)>"
+    },
+
     "unknown_params": {
         "input": "<your input here>",
         "outdir": "<your results folder>"
@@ -137,8 +144,8 @@ if not use_aws_batch:
     os.remove(os.path.join(scripts_dir, "aws_costs.py"))
     shutil.rmtree(os.path.join(project_dir, ".claude", "skills", "aws-costs"))
 
-# the CPU-hours estimate is calibrated on nf-core/methylseq, rnaseq and sarek runs only
-if project_type not in ("nf-core/methylseq", "nf-core/rnaseq", "nf-core/sarek"):
+# the CPU-hours estimate is calibrated on nf-core/methylseq, rnaseq, sarek and cnr-ibba/nf-resequencing-mem runs only
+if project_type not in ("nf-core/methylseq", "nf-core/rnaseq", "nf-core/sarek", "cnr-ibba/nf-resequencing-mem"):
     os.remove(os.path.join(scripts_dir, "estimate_cpu_hours.py"))
     os.remove(os.path.join(project_dir, "conf", "cpu_model.json"))
     shutil.rmtree(os.path.join(project_dir, ".claude", "skills", "estimate-cpu-hours"))

@@ -71,6 +71,10 @@ The optional `genome` column is written only with `--genome`.
 ```bash
 python3 scripts/make_samplesheet.py --path <data path> --format sarek > conf/samplesheet_all.csv
 ```
+{%- elif cookiecutter.project_type == "cnr-ibba/nf-resequencing-mem" -%}
+```bash
+python3 scripts/make_samplesheet.py --path <data path> --format nf-resequencing-mem > conf/samplesheet_all.csv
+```
 {%- elif cookiecutter.project_type == "nf-core/smrnaseq" -%}
 ```bash
 python3 scripts/make_samplesheet.py --path <data path> --format nf-resequencing-mem > conf/samplesheet_all.csv

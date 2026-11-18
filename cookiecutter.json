@@ -8,7 +8,8 @@
         "nf-core/methylong",
         "nf-core/rnaseq",
         "nf-core/sarek",
-        "nf-core/smrnaseq"
+        "nf-core/smrnaseq",
+        "cnr-ibba/nf-resequencing-mem"
     ],
     "nextflow_as_a_job": false,
     "with_docker": false,
