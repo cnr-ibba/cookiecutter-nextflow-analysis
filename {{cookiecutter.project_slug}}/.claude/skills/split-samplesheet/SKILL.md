@@ -67,6 +67,10 @@ python3 scripts/make_samplesheet.py --path <data path> --format methylseq [--gen
 ```
 
 The optional `genome` column is written only with `--genome`.
+{%- elif cookiecutter.project_type == "nf-core/sarek" -%}
+```bash
+python3 scripts/make_samplesheet.py --path <data path> --format sarek > conf/samplesheet_all.csv
+```
 {%- elif cookiecutter.project_type == "nf-core/smrnaseq" -%}
 ```bash
 python3 scripts/make_samplesheet.py --path <data path> --format nf-resequencing-mem > conf/samplesheet_all.csv

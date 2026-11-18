@@ -12,6 +12,10 @@ The model `conf/cpu_model.json` (one key per pipeline, here `{{ cookiecutter.__p
 {%- if cookiecutter.project_type == "nf-core/methylseq" %}
 Two RRBS runs (98 samples, bismark, rat genome): ~1 CPU-h per million read pairs,
 80% of it in `BISMARK_ALIGN`; per-sample error ~5%; a model fitted on one run predicted the other within 2%.
+{%- elif cookiecutter.project_type == "nf-core/sarek" %}
+Nine batches (541 samples, bwa-mem + HaplotypeCaller + joint germline calling, *Phaseolus vulgaris* 521 Mb, 2x150,
+pool-seq, AWS Batch): ~0.75 CPU-h per million read pairs (~2.2-2.9 CPU-h per Gbp),
+70% in `BWAMEM1_MEM`, 22% in `GATK4_HAPLOTYPECALLER`. Held-out batches are predicted within ~10-18%.
 {%- else %}
 Two runs (STAR + Salmon, paired-end 150, 129 samples, bos taurus and rattus norvegicus): ~0.35 CPU-h per million
 read pairs (STAR_ALIGN, DUPRADAR, TRIMGALORE, PICARD_MARKDUPLICATES dominate). The total of a run is predicted
@@ -22,6 +26,10 @@ but **per-sample cost varies a lot** (0.06-1.2 CPU-h per million reads), so trus
 ## 1. Reads
 
 The predictor is the number of **read pairs** (not genome size x coverage).
+{%- if cookiecutter.project_type == "nf-core/sarek" %} Alignment and variant calling scale with
+the sequenced bases (genome x coverage), but the calibration has a single genome and read length (150):
+for another genome or read length, scale the estimate by bases (read pairs x read length), not by pairs.
+{%- endif %}
 Use R1 `num_seqs` from `conf/seq_stats.tsv` (see the `split-samplesheet` skill; run it
 first if missing) and sum it in millions:
 
@@ -38,6 +46,11 @@ python scripts/estimate_cpu_hours.py predict --pipeline {{ cookiecutter.__pipeli
 ```
 
 `--no-genome-prep` if the genome index already exists.
+{%- if cookiecutter.project_type == "nf-core/sarek" %} On AWS add `--usd-per-cpu-h 0.0126 0.0188`
+(EC2 only, all services and taxes; from the consolidated bill of the calibration runs: 41k CPU-h, $772, $1.33 per sample)
+to print the cost range; the model counts only successful tasks, so for the billed total use the upper price
+or add the retries of Spot losses.
+{%- endif %}
 {%- if cookiecutter.project_type == "nf-core/methylseq" %} `--aligned` if the
 number is already after trimming.
 {%- endif %} Report the table and the total.
@@ -53,6 +66,13 @@ number is already after trimming.
   estimate is only indicative. To recalibrate: `fit --pipeline methylseq --run
   pipeline_info/execution_report_*.html <multiqc_data>/bismark_alignment.txt
   <multiqc_data>/multiqc_fastqc.txt`
+{%- elif cookiecutter.project_type == "nf-core/sarek" -%}
+- Calibrated on pool-seq of a 521 Mb genome with the `cpus` requested in those runs (BWA 8-16, HaplotypeCaller 8);
+  per-batch error is systematic: 2.2 CPU-h/Gbp in the BMK batches, 2.8 in the older ones (CPU type, retries or data
+  quality cannot be separated), so give a +/-15% range. Joint calling (`GENOMICSDBIMPORT`, `GENOTYPEGVCFS`) is a
+  fixed cost per run (~35 CPU-h) that grows with the number of samples, not with the reads.
+  To recalibrate: `fit --pipeline sarek --run pipeline_info/execution_report_*.html
+  <multiqc_data>/multiqc_fastqc.txt` (lanes are summed per sample; a sample sequenced again in another run is kept apart)
 {%- else -%}
 - Calibrated on mammalian PE150 samples with the `cpus` requested in those runs (STAR 12 cpus
   or similar); different read length, genome size or resources make the estimate only indicative.

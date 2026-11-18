@@ -89,6 +89,15 @@ json_params = {
         "outdir": "<your results folder>"
     },
 
+    "nf-core/sarek": {
+        "input": "<your input here>",
+        "outdir": "<your results folder>",
+        "fasta": "<genome fasta file>",
+        "igenomes_ignore": True,
+        "tools": "haplotypecaller",
+        "skip_tools": "baserecalibrator"
+    },
+
     "nf-core/smrnaseq": {
         "input": "<your input here>",
         "fasta": "<genome fasta file>",
@@ -128,8 +137,8 @@ if not use_aws_batch:
     os.remove(os.path.join(scripts_dir, "aws_costs.py"))
     shutil.rmtree(os.path.join(project_dir, ".claude", "skills", "aws-costs"))
 
-# the CPU-hours estimate is calibrated on nf-core/methylseq and nf-core/rnaseq runs only
-if project_type not in ("nf-core/methylseq", "nf-core/rnaseq"):
+# the CPU-hours estimate is calibrated on nf-core/methylseq, rnaseq and sarek runs only
+if project_type not in ("nf-core/methylseq", "nf-core/rnaseq", "nf-core/sarek"):
     os.remove(os.path.join(scripts_dir, "estimate_cpu_hours.py"))
     os.remove(os.path.join(project_dir, "conf", "cpu_model.json"))
     shutil.rmtree(os.path.join(project_dir, ".claude", "skills", "estimate-cpu-hours"))

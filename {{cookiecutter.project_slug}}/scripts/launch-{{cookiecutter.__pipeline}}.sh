@@ -23,6 +23,8 @@ trap 'kill -TERM $NF_PID 2>/dev/null || exit 143' TERM
 {% include "methylong.sh" %}
 {% elif cookiecutter.project_type == "nf-core/rnaseq" %}
 {% include "rnaseq.sh" %}
+{% elif cookiecutter.project_type == "nf-core/sarek" %}
+{% include "sarek.sh" %}
 {% elif cookiecutter.project_type == "nf-core/smrnaseq" %}
 {% include "smrnaseq.sh" %}
 {% endif %}

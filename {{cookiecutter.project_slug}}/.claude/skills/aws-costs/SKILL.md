@@ -79,6 +79,12 @@ some steps grow more than linearly with the read depth). Instead:
    fixed steps ×1; state the assumption;
 3. give a range (low/high factor) and the price per vCPU-hour from the test.
 
+{% if cookiecutter.project_type == "nf-core/sarek" -%}
+For sarek, `/estimate-cpu-hours` already has the CPU-h per read pair of 9 real batches and prints the cost with
+`--usd-per-cpu-h` (reference: $0.0188 per requested CPU-h all included, $0.0126 EC2 only): use it before the
+per-class forecast, and refit it (`fit --pipeline sarek`) with the new run.
+
+{% endif -%}
 A test on a fraction of the reads under-estimates steps that depend on depth:
 say so, and recheck the forecast on a larger pilot if there is one.
 
